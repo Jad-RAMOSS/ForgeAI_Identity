@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Forge AI — Design System Proposal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<!-- Fallback: Plus Jakarta Sans ≈ Europa (swap once Europa .woff2 files are self-hosted) -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,700&family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet" />
+<style>
+/* ── Europa @font-face (self-host: drop files in /fonts/) ──────────────────
+   Europa by Canape. Commercial license required.
+   Download: Adobe Fonts (use.typekit.net) or Fontspring.
+   ─────────────────────────────────────────────────────────────────────── */
+@font-face { font-family: 'Europa'; src: url('/fonts/Europa-Light.woff2') format('woff2'); font-weight: 300; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Europa'; src: url('/fonts/Europa-LightItalic.woff2') format('woff2'); font-weight: 300; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Europa'; src: url('/fonts/Europa-Regular.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Europa'; src: url('/fonts/Europa-Italic.woff2') format('woff2'); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Europa'; src: url('/fonts/Europa-Bold.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Europa'; src: url('/fonts/Europa-BoldItalic.woff2') format('woff2'); font-weight: 700; font-style: italic; font-display: swap; }
+</style>
+
+<style>
+  /* ─── TOKENS ─────────────────────────────────── */
+  :root {
+    --fuchsia: #F71BF8;
+    --cyan:    #00FFFF;
+    --trans-base: #E1E4F2;
+    --shadow-blue: #2E4259;
+    --obsidian: #0A0A0A;
+    --white: #FFFFFF;
+    --mid-magenta: #F71BF8;
+    --mid-cyan: #00E5FF;
+
+    /* mode vars */
+    --bg: #0A0A0A;
+    --bg2: #111118;
+    --bg3: #16161f;
+    --surface: rgba(255,255,255,0.04);
+    --surface2: rgba(255,255,255,0.07);
+    --border: rgba(247,27,248,0.18);
+    --border2: rgba(0,255,255,0.14);
+    --text-primary: #F0EFFF;
+    --text-secondary: rgba(240,239,255,0.55);
+    --text-label: rgba(0,255,255,0.8);
+    --glow-fuchsia: rgba(247,27,248,0.35);
+    --glow-cyan: rgba(0,255,255,0.25);
+    --code-bg: rgba(0,0,0,0.45);
+    --code-border: rgba(247,27,248,0.22);
+
+    --font-display: 'Orbitron', sans-serif;
+    --font-label: 'DM Sans', sans-serif;
+    --font-body: 'Inter', sans-serif;
+
+    --radius-lg: 24px;
+    --radius-md: 14px;
+    --radius-sm: 8px;
+    --transition: 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  [data-mode="light"] {
+    --bg: #F8F8FF;
+    --bg2: #EFEFFA;
+    --bg3: #E8E8F5;
+    --surface: rgba(255,255,255,0.72);
+    --surface2: rgba(255,255,255,0.85);
+    --border: rgba(247,27,248,0.25);
+    --border2: rgba(0,180,220,0.2);
+    --text-primary: #1A1228;
+    --text-secondary: rgba(26,18,40,0.55);
+    --text-label: #8B00CC;
+    --glow-fuchsia: rgba(247,27,248,0.15);
+    --glow-cyan: rgba(0,200,240,0.12);
+    --code-bg: rgba(230,228,245,0.7);
+    --code-border: rgba(160,0,200,0.2);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    transition: background var(--transition), color var(--transition);
+    overflow-x: hidden;
+  }
+
+  /* ─── NOISE TEXTURE OVERLAY ─── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+    opacity: 0.5;
+  }
+
+  main {
+    position: relative; z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 48px 120px;
+  }
+
+  /* ─── TOP NAV ─────────────────────────────────── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 48px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(20px);
+    transition: background var(--transition), border-color var(--transition);
+  }
+
+  .nav-logo {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .nav-logo-img {
+    height: 36px; width: auto;
+    filter: drop-shadow(0 0 8px var(--glow-fuchsia));
+    transition: filter var(--transition);
+  }
+  .nav-wordmark {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    background: linear-gradient(90deg, var(--fuchsia), var(--cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .nav-controls {
+    display: flex; align-items: center; gap: 16px;
+  }
+
+  .chip {
+    font-family: var(--font-label);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 5px 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .chip:hover { border-color: var(--fuchsia); color: var(--text-primary); }
+  .chip.active { border-color: var(--fuchsia); color: var(--fuchsia); background: rgba(247,27,248,0.08); }
+
+  /* ─── MODE TOGGLE ─────────────────────────────── */
+  .mode-toggle {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 6px 14px;
+    cursor: pointer;
+    font-family: var(--font-label);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--text-primary);
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .mode-toggle:hover { border-color: var(--fuchsia); }
+  .toggle-track {
+    width: 36px; height: 20px;
+    background: linear-gradient(90deg, rgba(247,27,248,0.3), rgba(0,255,255,0.3));
+    border-radius: 100px;
+    position: relative;
+    transition: background 0.3s;
+  }
+  .toggle-thumb {
+    position: absolute; top: 2px; left: 2px;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--fuchsia);
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), background 0.3s;
+    box-shadow: 0 0 8px var(--fuchsia);
+  }
+  [data-mode="light"] .toggle-thumb {
+    transform: translateX(16px);
+    background: var(--cyan);
+    box-shadow: 0 0 8px var(--cyan);
+  }
+
+  /* ─── PAGE HEADER ─────────────────────────────── */
+  .page-header {
+    padding: 80px 0 64px;
+    text-align: center;
+  }
+  .page-eyebrow {
+    font-family: var(--font-label);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-label);
+    margin-bottom: 20px;
+  }
+  .page-title {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    line-height: 1.05;
+    background: linear-gradient(135deg, #fff 20%, var(--fuchsia) 50%, var(--cyan) 80%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 20px;
+  }
+  [data-mode="light"] .page-title {
+    background: linear-gradient(135deg, #1A1228 20%, var(--fuchsia) 55%, #007ACC 85%);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  .page-subtitle {
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--text-secondary);
+    max-width: 560px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  /* ─── SECTION WRAPPER ─────────────────────────── */
+  .section {
+    margin-bottom: 100px;
+  }
+  .section-label {
+    display: flex; align-items: center; gap: 16px;
+    margin-bottom: 40px;
+  }
+  .section-num {
+    font-family: var(--font-display);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: var(--fuchsia);
+    opacity: 0.7;
+  }
+  .section-title {
+    font-family: var(--font-label);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-primary);
+    opacity: 0.85;
+  }
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+  }
+
+  /* ─── CARD ────────────────────────────────────── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    backdrop-filter: blur(16px);
+    overflow: hidden;
+    transition: background var(--transition), border-color var(--transition);
+  }
+  .card-inner { padding: 48px; }
+
+  /* ─── CODE BLOCK ──────────────────────────────── */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--code-border);
+    border-radius: var(--radius-md);
+    padding: 24px 28px;
+    font-family: 'Courier New', monospace;
+    font-size: 12.5px;
+    line-height: 1.75;
+    color: var(--text-secondary);
+    overflow-x: auto;
+    margin-top: 24px;
+  }
+  .code-block .kw  { color: var(--fuchsia); }
+  .code-block .fn  { color: var(--cyan); }
+  .code-block .str { color: #A8FF9A; }
+  .code-block .cm  { color: rgba(255,255,255,0.28); font-style: italic; }
+  [data-mode="light"] .code-block .cm { color: rgba(0,0,0,0.3); }
+  [data-mode="light"] .code-block .str { color: #0A7A3C; }
+
+  /* ─── LABEL PILL ──────────────────────────────── */
+  .pill {
+    display: inline-flex;
+    font-family: var(--font-label);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border-radius: 100px;
+    padding: 4px 12px;
+    margin-bottom: 12px;
+  }
+  .pill-fuchsia { background: rgba(247,27,248,0.1); color: var(--fuchsia); border: 1px solid rgba(247,27,248,0.3); }
+  .pill-cyan    { background: rgba(0,255,255,0.08); color: #00E5FF; border: 1px solid rgba(0,255,255,0.25); }
+  .pill-purple  { background: rgba(130,100,220,0.12); color: #A88EFF; border: 1px solid rgba(130,100,220,0.3); }
+
+  /* ══════════════════════════════════════════════
+     SECTION 1 — LOGO COMPONENT
+  ══════════════════════════════════════════════ */
+  .logo-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .logo-panel {
+    padding: 60px 40px;
+    display: flex; flex-direction: column; align-items: center;
+    position: relative; overflow: hidden;
+    transition: all var(--transition);
+  }
+  .logo-panel-dark {
+    background: #0A0A0A;
+  }
+  .logo-panel-light {
+    background: #FFFFFF;
+  }
+  .logo-panel-active-dark {
+    box-shadow: inset 0 0 60px rgba(247,27,248,0.08);
+  }
+  .logo-panel-active-light {
+    box-shadow: inset 0 0 60px rgba(0,150,220,0.06);
+  }
+  .logo-panel-badge {
+    font-family: var(--font-label);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border-radius: 100px;
+    padding: 5px 14px;
+    margin-bottom: 32px;
+    border: 1px solid;
+  }
+  .badge-dark { background: rgba(247,27,248,0.12); color: var(--fuchsia); border-color: rgba(247,27,248,0.3); }
+  .badge-light { background: rgba(0,150,220,0.08); color: #0090CC; border-color: rgba(0,150,220,0.25); }
+
+  .logo-img-wrap {
+    position: relative;
+    width: 180px; height: 180px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .logo-glow-ring {
+    position: absolute; inset: -20px;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .logo-img {
+    width: 160px; height: 160px;
+    object-fit: contain;
+    position: relative; z-index: 1;
+    transition: filter var(--transition);
+  }
+  .logo-glow-dark .logo-img {
+    filter: drop-shadow(0 0 24px rgba(247,27,248,0.7)) drop-shadow(0 0 48px rgba(0,255,255,0.4));
+  }
+  .logo-glow-light .logo-img {
+    filter: drop-shadow(0 0 8px rgba(0,150,220,0.3)) drop-shadow(0 0 2px rgba(247,27,248,0.2));
+  }
+
+  .logo-active-indicator {
+    margin-top: 28px;
+    font-family: var(--font-label);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    padding: 5px 16px;
+    border-radius: 100px;
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: all var(--transition);
+  }
+  .active-ind-dark {
+    color: rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.04);
+  }
+  .active-ind-light {
+    color: rgba(0,0,0,0.4);
+    background: rgba(0,0,0,0.04);
+  }
+  .active-marker {
+    display: inline-block; width: 6px; height: 6px;
+    border-radius: 50%; margin-right: 7px; vertical-align: middle;
+  }
+  .am-dark { background: var(--fuchsia); box-shadow: 0 0 6px var(--fuchsia); }
+  .am-light { background: #0099CC; box-shadow: 0 0 6px #0099CC; }
+
+  /* current mode highlight */
+  .logo-panel-dark .mode-highlight-dark,
+  .logo-panel-light .mode-highlight-light { display: flex; }
+
+  .mode-spec {
+    margin-top: 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .spec-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 20px 24px;
+  }
+  .spec-key {
+    font-family: var(--font-label);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-label);
+    margin-bottom: 6px;
+  }
+  .spec-val {
+    font-family: var(--font-body);
+    font-size: 13px;
+    color: var(--text-primary);
+    line-height: 1.6;
+  }
+
+  /* ══════════════════════════════════════════════
+     SECTION 2 — TYPOGRAPHY
+  ══════════════════════════════════════════════ */
+  .typo-demo {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .typo-row {
+    display: grid;
+    grid-template-columns: 160px 1fr auto;
+    align-items: start;
+    gap: 32px;
+    padding: 36px 40px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s;
+    position: relative;
+  }
+  .typo-row:hover { background: var(--surface); }
+  .typo-row:last-child { border-bottom: none; }
+
+  .typo-meta {
+    padding-top: 4px;
+  }
+  .typo-role {
+    font-family: var(--font-label);
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--text-label);
+    margin-bottom: 4px;
+  }
+  .typo-spec-text {
+    font-family: var(--font-body);
+    font-size: 11px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+  .typo-content { flex: 1; }
+  .typo-token {
+    font-family: var(--font-body);
+    font-size: 11px;
+    color: var(--text-secondary);
+    text-align: right;
+    padding-top: 4px;
+    white-space: nowrap;
+    opacity: 0.6;
+  }
+
+  /* Display / Glass Capsule simulation */
+  .type-display {
+    font-family: var(--font-display);
+    font-size: 68px;
+    font-weight: 900;
+    letter-spacing: -0.01em;
+    line-height: 1.0;
+    background: linear-gradient(125deg, #fff 0%, var(--fuchsia) 45%, var(--cyan) 90%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+  }
+  [data-mode="light"] .type-display {
+    background: linear-gradient(125deg, #1A1228 0%, var(--fuchsia) 45%, #007ABF 90%);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  .type-display-note {
+    font-family: var(--font-body);
+    font-size: 11px;
+    color: var(--fuchsia);
+    margin-top: 8px;
+    opacity: 0.75;
+    -webkit-text-fill-color: initial;
+    background: none;
+  }
+
+  /* Sub-header / Europa */
+  .type-subhead {
+    font-family: var(--font-label);
+    font-size: 28px;
+    font-weight: 300;
+    letter-spacing: 0.06em;
+    color: var(--text-primary);
+    line-height: 1.3;
+  }
+  .type-subhead strong {
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  /* Label */
+  .type-label {
+    font-family: var(--font-label);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--text-label);
+  }
+
+  /* Body / Inter */
+  .type-body {
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.75;
+    color: var(--text-secondary);
+    max-width: 560px;
+  }
+
+  /* Font comparison sidebar */
+  .font-compare {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .font-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .font-card::before {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--fuchsia), var(--cyan));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .font-card:hover::before { opacity: 1; }
+  .font-name {
+    font-family: var(--font-label);
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--text-label);
+    margin-bottom: 16px;
+  }
+  .font-sample-gc {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 900;
+    background: linear-gradient(90deg, var(--fuchsia), var(--cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 0.02em;
+  }
+  .font-sample-eu {
+    font-family: var(--font-label);
+    font-size: 28px;
+    font-weight: 400;
+    color: var(--text-primary);
+    letter-spacing: 0.06em;
+  }
+  .font-sample-in {
+    font-family: var(--font-body);
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+  .font-usage {
+    font-family: var(--font-body);
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-top: 12px;
+    line-height: 1.5;
+  }
+
+  /* ══════════════════════════════════════════════
+     SECTION 3 — CTA BUTTON
+  ══════════════════════════════════════════════ */
+  .btn-stage {
+    min-height: 340px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 40px;
+    padding: 60px 40px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    position: relative; overflow: hidden;
+  }
+  /* ambient environment glow */
+  .btn-stage::before {
+    content: '';
+    position: absolute;
+    width: 500px; height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(247,27,248,0.12) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    filter: blur(30px);
+  }
+  .btn-stage::after {
+    content: '';
+    position: absolute;
+    width: 300px; height: 120px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(0,255,255,0.08) 0%, transparent 70%);
+    bottom: 20%; right: 15%;
+    pointer-events: none;
+    filter: blur(20px);
+  }
+
+  .btn-row {
+    display: flex; align-items: center; gap: 24px; flex-wrap: wrap; justify-content: center;
+    position: relative; z-index: 1;
+  }
+
+  /* PRIMARY CTA — NEON GLASS */
+  .btn-neon {
+    position: relative;
+    font-family: var(--font-label);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #fff;
+    background: linear-gradient(135deg,
+      rgba(247,27,248,0.28) 0%,
+      rgba(130,60,200,0.18) 50%,
+      rgba(0,255,255,0.18) 100%
+    );
+    border: 1px solid rgba(247,27,248,0.55);
+    border-radius: 100px;
+    padding: 16px 40px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    backdrop-filter: blur(12px);
+    outline: none;
+
+    /* ── THE NEON GLOW SYSTEM ── */
+    box-shadow:
+      /* inner rim light */
+      inset 0 1px 0 rgba(255,255,255,0.2),
+      inset 0 -1px 0 rgba(0,255,255,0.15),
+      /* close soft glow */
+      0 0 12px rgba(247,27,248,0.5),
+      0 0 24px rgba(247,27,248,0.3),
+      /* mid bloom */
+      0 0 48px rgba(247,27,248,0.15),
+      /* far atmospheric */
+      0 0 80px rgba(247,27,248,0.08),
+      /* ground shadow */
+      0 8px 24px rgba(0,0,0,0.4);
+  }
+  /* glass specular sheen */
+  .btn-neon::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.18) 0%, transparent 100%);
+    border-radius: 100px 100px 0 0;
+    pointer-events: none;
+  }
+  /* refraction bottom caustic */
+  .btn-neon::after {
+    content: '';
+    position: absolute; bottom: 0; left: 10%; right: 10%;
+    height: 30%;
+    background: linear-gradient(0deg, rgba(0,255,255,0.18) 0%, transparent 100%);
+    border-radius: 0 0 100px 100px;
+    pointer-events: none;
+  }
+  .btn-neon:hover {
+    transform: translateY(-3px) scale(1.02);
+    border-color: rgba(247,27,248,0.85);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.28),
+      inset 0 -1px 0 rgba(0,255,255,0.25),
+      0 0 18px rgba(247,27,248,0.75),
+      0 0 36px rgba(247,27,248,0.5),
+      0 0 72px rgba(247,27,248,0.3),
+      0 0 120px rgba(247,27,248,0.15),
+      0 12px 32px rgba(0,0,0,0.5);
+  }
+  .btn-neon:active {
+    transform: translateY(-1px) scale(0.99);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.15),
+      inset 0 -1px 0 rgba(0,255,255,0.1),
+      0 0 10px rgba(247,27,248,0.6),
+      0 0 24px rgba(247,27,248,0.4),
+      0 4px 12px rgba(0,0,0,0.4);
+  }
+
+  /* SECONDARY — GHOST GLASS */
+  .btn-ghost {
+    position: relative;
+    font-family: var(--font-label);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 16px 36px;
+    cursor: pointer;
+    transition: all 0.3s;
+    backdrop-filter: blur(8px);
+    outline: none;
+  }
+  .btn-ghost:hover {
+    border-color: rgba(0,255,255,0.45);
+    color: var(--text-primary);
+    box-shadow: 0 0 16px rgba(0,255,255,0.12), 0 0 32px rgba(0,255,255,0.06);
+  }
+
+  /* TERTIARY — GLASS FILLED */
+  .btn-glass {
+    position: relative;
+    font-family: var(--font-label);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #0A0A0A;
+    background: linear-gradient(135deg, rgba(247,27,248,0.9), rgba(0,200,255,0.9));
+    border: none;
+    border-radius: 100px;
+    padding: 16px 36px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    outline: none;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.4),
+      0 0 20px rgba(247,27,248,0.4),
+      0 0 40px rgba(0,200,255,0.2),
+      0 6px 20px rgba(0,0,0,0.35);
+  }
+  .btn-glass::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 50%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, transparent 100%);
+    border-radius: 100px 100px 0 0;
+    pointer-events: none;
+  }
+  .btn-glass:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.5),
+      0 0 28px rgba(247,27,248,0.6),
+      0 0 56px rgba(0,200,255,0.35),
+      0 10px 28px rgba(0,0,0,0.45);
+  }
+
+  /* ANATOMY BREAKDOWN */
+  .btn-anatomy {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 40px;
+  }
+
+  .anatomy-col {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 28px;
+  }
+  .anatomy-title {
+    font-family: var(--font-label);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-label);
+    margin-bottom: 20px;
+  }
+  .anatomy-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .anatomy-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-top: 5px;
+    flex-shrink: 0;
+  }
+  .dot-fuchsia { background: var(--fuchsia); box-shadow: 0 0 6px var(--fuchsia); }
+  .dot-cyan    { background: var(--cyan); box-shadow: 0 0 6px var(--cyan); }
+  .dot-white   { background: rgba(255,255,255,0.6); }
+  .dot-purple  { background: #9B6DFF; box-shadow: 0 0 6px #9B6DFF; }
+  .anatomy-text {
+    font-family: var(--font-body);
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+  .anatomy-text strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  /* ── TWEAKS PANEL ─────────────────────────────── */
+  #tweaks-panel {
+    display: none;
+    position: fixed;
+    bottom: 24px; right: 24px;
+    z-index: 200;
+    background: rgba(10,10,15,0.85);
+    border: 1px solid rgba(247,27,248,0.3);
+    border-radius: 18px;
+    padding: 24px;
+    width: 280px;
+    backdrop-filter: blur(24px);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.6), 0 0 40px rgba(247,27,248,0.1);
+  }
+  [data-mode="light"] #tweaks-panel {
+    background: rgba(245,244,255,0.92);
+    border-color: rgba(247,27,248,0.2);
+  }
+  .tweaks-title {
+    font-family: var(--font-display);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--fuchsia);
+    margin-bottom: 20px;
+  }
+  .tweak-row {
+    margin-bottom: 16px;
+  }
+  .tweak-label {
+    font-family: var(--font-label);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    display: block;
+  }
+  .tweak-select {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 12px;
+    padding: 7px 10px;
+    cursor: pointer;
+    outline: none;
+  }
+  .tweak-slider {
+    width: 100%;
+    accent-color: var(--fuchsia);
+  }
+  .tweak-toggle-row {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .tweak-toggle-pill {
+    display: flex;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+  .tweak-opt {
+    font-family: var(--font-label);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 5px 12px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+  }
+  .tweak-opt.selected {
+    background: rgba(247,27,248,0.18);
+    color: var(--fuchsia);
+  }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(247,27,248,0.3); border-radius: 3px; }
+
+  /* ── DIVIDER ─── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 48px 0;
+  }
+
+  /* ── ANIMATED GLOW PULSE ─── */
+  @keyframes glowPulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+  .glow-pulse { animation: glowPulse 3s ease-in-out infinite; }
+
+  /* nav active state */
+  .nav-link {
+    font-family: var(--font-label);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-link:hover { color: var(--text-primary); }
+
+  /* summary grid */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .summary-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 28px;
+    position: relative; overflow: hidden;
+  }
+  .summary-card::after {
+    content: '';
+    position: absolute; top: 0; right: 0;
+    width: 80px; height: 80px;
+    background: radial-gradient(ellipse at top right, var(--glow-fuchsia), transparent);
+    pointer-events: none;
+  }
+  .sc-num {
+    font-family: var(--font-display);
+    font-size: 36px;
+    font-weight: 900;
+    background: linear-gradient(90deg, var(--fuchsia), var(--cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .sc-label {
+    font-family: var(--font-label);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+  }
+  .sc-desc {
+    font-family: var(--font-body);
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body data-mode="dark">
+
+<!-- ── NAV ── -->
+<nav>
+  <div class="nav-logo">
+    <img class="nav-logo-img" id="nav-logo" src="uploads/A_high-definition,_3D_202604191955.png" alt="Forge AI" />
+    <span class="nav-wordmark">FORGE AI</span>
+  </div>
+  <div class="nav-controls">
+    <a href="#logo" class="nav-link">Logo</a>
+    <a href="#typography" class="nav-link">Typography</a>
+    <a href="#cta" class="nav-link">CTA Button</a>
+    <div class="mode-toggle" id="modeToggle" role="button" tabindex="0" title="Toggle dark/light mode">
+      <div class="toggle-track"><div class="toggle-thumb"></div></div>
+      <span id="mode-label">Dark</span>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+  <!-- ── PAGE HEADER ── -->
+  <div class="page-header">
+    <div class="page-eyebrow">Design System — Proposal v1.0</div>
+    <h1 class="page-title">Neon-Glass<br/>Component Architecture</h1>
+    <p class="page-subtitle">Logo switching logic, typographic hierarchy, and CTA anatomy for the Forge AI "Neon-Transmissive" ecosystem.</p>
+  </div>
+
+  <!-- summary row -->
+  <div class="summary-grid" style="margin-bottom: 80px;">
+    <div class="summary-card">
+      <div class="sc-num">01</div>
+      <div class="sc-label">Logo Component</div>
+      <div class="sc-desc">Automatic dark/light variant swap via CSS + JS observer</div>
+    </div>
+    <div class="summary-card">
+      <div class="sc-num">02</div>
+      <div class="sc-label">Type Hierarchy</div>
+      <div class="sc-desc">Glass Capsule · Europa · Inter — 4-tier scale</div>
+    </div>
+    <div class="summary-card">
+      <div class="sc-num">03</div>
+      <div class="sc-label">CTA Button</div>
+      <div class="sc-desc">5-layer glow system with glass specular & refraction</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 1 — LOGO COMPONENT
+  ══════════════════════════════════════════ -->
+  <section class="section" id="logo">
+    <div class="section-label">
+      <span class="section-num">01</span>
+      <span class="section-title">Logo Component — Dark / Light Swap</span>
+      <div class="section-line"></div>
+    </div>
+
+    <!-- Live demo -->
+    <div class="logo-split">
+      <!-- DARK PANEL -->
+      <div class="logo-panel logo-panel-dark">
+        <div class="logo-panel-badge badge-dark">Dark Mode — "Glow" Variant</div>
+        <div class="logo-img-wrap logo-glow-dark">
+          <div class="logo-glow-ring glow-pulse" style="background: radial-gradient(ellipse, rgba(247,27,248,0.25) 0%, rgba(0,255,255,0.1) 50%, transparent 70%); filter: blur(20px);"></div>
+          <img class="logo-img" src="uploads/A_high-definition,_3D_202604191955.png" alt="Forge AI Dark Logo" />
+        </div>
+        <div class="logo-active-indicator active-ind-dark">
+          <span class="active-marker am-dark"></span>Gaseous Infusion — Bloom Active
+        </div>
+      </div>
+
+      <!-- LIGHT PANEL -->
+      <div class="logo-panel logo-panel-light">
+        <div class="logo-panel-badge badge-light">Light Mode — "Refractive" Variant</div>
+        <div class="logo-img-wrap logo-glow-light">
+          <img class="logo-img" src="uploads/Modify_the_provided_202604192131.png" alt="Forge AI Light Logo" />
+        </div>
+        <div class="logo-active-indicator active-ind-light">
+          <span class="active-marker am-light"></span>Caustic Refraction — Clarity Mode
+        </div>
+      </div>
+    </div>
+
+    <!-- Spec cards -->
+    <div class="mode-spec">
+      <div class="spec-card">
+        <div class="spec-key">Dark Mode — Glow Protocol</div>
+        <div class="spec-val">
+          Background: Deep Obsidian <code style="font-size:11px; color: var(--fuchsia)">#0A0A0A</code><br/>
+          Effect: <code style="font-size:11px; color: var(--cyan)">drop-shadow</code> Fuchsia 24px + Cyan 48px<br/>
+          Animation: Pulse bloom, 3s ease-in-out<br/>
+          CSS class: <code style="font-size:11px; color: var(--fuchsia)">.logo--glow</code>
+        </div>
+      </div>
+      <div class="spec-card">
+        <div class="spec-key">Light Mode — Refractive Protocol</div>
+        <div class="spec-val">
+          Background: Bright White <code style="font-size:11px; color: #0090CC">#FFFFFF</code><br/>
+          Effect: Subtle <code style="font-size:11px; color: #0090CC">drop-shadow</code> Cyan 8px only<br/>
+          Animation: None — static clarity<br/>
+          CSS class: <code style="font-size:11px; color: #0090CC">.logo--refractive</code>
+        </div>
+      </div>
+      <div class="spec-card">
+        <div class="spec-key">Asset Requirements</div>
+        <div class="spec-val">
+          Format: Transparent PNG (non-negotiable)<br/>
+          Min size: 512×512px source<br/>
+          Never: solid white / black bg<br/>
+          Always: float with min 20px clearance
+        </div>
+      </div>
+      <div class="spec-card">
+        <div class="spec-key">Swap Mechanism</div>
+        <div class="spec-val">
+          JS: <code style="font-size:11px; color: var(--fuchsia)">matchMedia('prefers-color-scheme')</code><br/>
+          Attr: <code style="font-size:11px; color: var(--cyan)">data-mode="dark|light"</code> on <code style="font-size:11px">:root</code><br/>
+          Transition: CSS filter 0.45s ease<br/>
+          Src swap: <code style="font-size:11px; color: var(--fuchsia)">data-src-dark / data-src-light</code>
+        </div>
+      </div>
+    </div>
+
+    <!-- Code block -->
+    <div class="code-block">
+<span class="cm">/* ── Logo Component: Auto Dark/Light Swap ── */</span>
+
+<span class="cm">// HTML markup — two sources, one element</span>
+&lt;<span class="fn">img</span>
+  id=<span class="str">"forge-logo"</span>
+  class=<span class="str">"logo"</span>
+  data-src-dark=<span class="str">"/assets/logo-glow.png"</span>
+  data-src-light=<span class="str">"/assets/logo-refractive.png"</span>
+  alt=<span class="str">"Forge AI"</span>
+/&gt;
+
+<span class="cm">// JS: observer-based swap</span>
+<span class="kw">const</span> <span class="fn">logo</span> = document.getElementById(<span class="str">'forge-logo'</span>);
+<span class="kw">const</span> swap = (isDark) =&gt; {
+  logo.src = isDark
+    ? logo.dataset.srcDark
+    : logo.dataset.srcLight;
+  logo.className = isDark ? <span class="str">'logo logo--glow'</span> : <span class="str">'logo logo--refractive'</span>;
+};
+
+<span class="kw">const</span> mq = window.matchMedia(<span class="str">'(prefers-color-scheme: dark)'</span>);
+swap(mq.matches);
+mq.addEventListener(<span class="str">'change'</span>, e =&gt; swap(e.matches));
+
+<span class="cm">/* ── CSS: glow vs refractive states ── */</span>
+.logo--glow {
+  filter:
+    drop-shadow(0 0 <span class="str">24px</span> <span class="str">#F71BF8</span>)
+    drop-shadow(0 0 <span class="str">48px</span> rgba(<span class="str">0,255,255,0.4</span>));
+  animation: glowPulse 3s ease-in-out infinite;
+}
+.logo--refractive {
+  filter: drop-shadow(0 0 <span class="str">8px</span> rgba(<span class="str">0,150,220,0.3</span>));
+}
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 2 — TYPOGRAPHY
+  ══════════════════════════════════════════ -->
+  <section class="section" id="typography">
+    <div class="section-label">
+      <span class="section-num">02</span>
+      <span class="section-title">Typography Hierarchy</span>
+      <div class="section-line"></div>
+    </div>
+
+    <!-- Live type demo -->
+    <div class="typo-demo">
+
+      <!-- DISPLAY -->
+      <div class="typo-row">
+        <div class="typo-meta">
+          <div class="typo-role">Display / H1</div>
+          <div class="typo-spec-text">
+            Glass Capsule*<br/>
+            (simulated: Orbitron)<br/>
+            900 weight<br/>
+            Gradient: Fuchsia→Cyan
+          </div>
+        </div>
+        <div class="typo-content">
+          <div class="type-display">Forge AI</div>
+          <div class="type-display-note">* Glass Capsule requires commercial license — Orbitron shown as placeholder substrate</div>
+        </div>
+        <div class="typo-token">--type-display<br/>68px / 1.0lh</div>
+      </div>
+
+      <!-- SUBHEADER -->
+      <div class="typo-row">
+        <div class="typo-meta">
+          <div class="typo-role">Sub-header / H2</div>
+          <div class="typo-spec-text">
+            Europa (DM Sans)<br/>
+            300–700 weight<br/>
+            Primary text color<br/>
+            0.06em tracking
+          </div>
+        </div>
+        <div class="typo-content">
+          <div class="type-subhead"><strong>Intelligent automation,</strong><br/>indistinguishable from reality.</div>
+        </div>
+        <div class="typo-token">--type-subhead<br/>28px / 1.3lh</div>
+      </div>
+
+      <!-- LABEL -->
+      <div class="typo-row">
+        <div class="typo-meta">
+          <div class="typo-role">UI Label</div>
+          <div class="typo-spec-text">
+            Europa (DM Sans)<br/>
+            700 weight<br/>
+            ALL CAPS<br/>
+            0.22em tracking
+          </div>
+        </div>
+        <div class="typo-content">
+          <div class="type-label">Neon-Glass System · Version 1.0 · Cyber-Premium</div>
+        </div>
+        <div class="typo-token">--type-label<br/>11px / caps</div>
+      </div>
+
+      <!-- BODY -->
+      <div class="typo-row">
+        <div class="typo-meta">
+          <div class="typo-role">Body / Inter</div>
+          <div class="typo-spec-text">
+            Inter<br/>
+            400 weight<br/>
+            Secondary text<br/>
+            1.75 line-height
+          </div>
+        </div>
+        <div class="typo-content">
+          <div class="type-body">Forge AI bridges human potential and intelligent automation. Our systems are built with material precision — every layer transmissive, every surface intentional. We value clarity as much as we value the glow.</div>
+        </div>
+        <div class="typo-token">--type-body<br/>15px / 1.75lh</div>
+      </div>
+
+    </div>
+
+    <!-- Font cards -->
+    <div class="font-compare">
+      <div class="font-card">
+        <div class="font-name">Glass Capsule — Display</div>
+        <div class="font-sample-gc">Aa Bb</div>
+        <div class="font-usage">
+          <strong>Use for:</strong> Hero headers, section titles, brand marks.<br/>
+          <strong>Never for:</strong> Body copy, captions, labels.<br/>
+          <strong>License:</strong> Commercial required.
+        </div>
+      </div>
+      <div class="font-card">
+        <div class="font-name">Europa — Structure</div>
+        <div class="font-sample-eu">Aa Bb Cc</div>
+        <div class="font-usage">
+          <strong>Use for:</strong> UI labels, nav, subheads, buttons, captions.<br/>
+          <strong>Weight range:</strong> 300–700.<br/>
+          <strong>License:</strong> Commercial required.
+        </div>
+      </div>
+      <div class="font-card">
+        <div class="font-name">Inter — Legibility</div>
+        <div class="font-sample-in" style="font-size: 18px;">Body copy, long-form text, descriptions, tooltips. Optimised for screens.</div>
+        <div class="font-usage">
+          <strong>Use for:</strong> All long-form readable text.<br/>
+          <strong>Weight range:</strong> 300–600.<br/>
+          <strong>License:</strong> Open source (SIL OFL).
+        </div>
+      </div>
+    </div>
+
+    <!-- Code -->
+    <div class="code-block">
+<span class="cm">/* ── Forge AI — CSS Type Scale ── */</span>
+:root {
+  <span class="cm">/* Fonts */</span>
+  --font-display: <span class="str">'Glass Capsule'</span>, 'Orbitron', sans-serif; <span class="cm">/* high-impact headers */</span>
+  --font-label:   <span class="str">'Europa'</span>, 'DM Sans', sans-serif;       <span class="cm">/* UI structure */</span>
+  --font-body:    <span class="str">'Inter'</span>, sans-serif;                    <span class="cm">/* readable text */</span>
+
+  <span class="cm">/* Scale */</span>
+  --type-display: 68px;  <span class="cm">/* Glass Capsule, 900, gradient */</span>
+  --type-subhead: 28px;  <span class="cm">/* Europa 300-700, 0.06em track */</span>
+  --type-label:   11px;  <span class="cm">/* Europa 700, CAPS, 0.22em track */</span>
+  --type-body:    15px;  <span class="cm">/* Inter 400, 1.75lh */</span>
+
+  <span class="cm">/* Gradient: applied only to display role */</span>
+  --gradient-display: linear-gradient(135deg, #fff 0%, #F71BF8 45%, #00FFFF 90%);
+}
+
+<span class="cm">/* Display usage */</span>
+.text-display {
+  font-family: var(--font-display);
+  font-size: var(--type-display);
+  font-weight: 900;
+  background: var(--gradient-display);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 3 — CTA BUTTON
+  ══════════════════════════════════════════ -->
+  <section class="section" id="cta">
+    <div class="section-label">
+      <span class="section-num">03</span>
+      <span class="section-title">Neon-Glass CTA Button — Light-Emitting System</span>
+      <div class="section-line"></div>
+    </div>
+
+    <!-- Live demo stage -->
+    <div class="btn-stage">
+      <div style="position:relative;z-index:1;">
+        <div class="type-label" style="text-align:center; margin-bottom: 28px; opacity:0.6;">Hover each variant to activate glow layers</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-neon">Start Building →</button>
+        <button class="btn-glass">Get Access</button>
+        <button class="btn-ghost">Learn More</button>
+      </div>
+      <div class="pill pill-fuchsia" style="position:relative;z-index:1;">Primary · Secondary · Ghost</div>
+    </div>
+
+    <!-- Anatomy breakdown -->
+    <div class="btn-anatomy">
+      <div class="anatomy-col">
+        <div class="anatomy-title">Primary CTA — 5-Layer Glow Architecture</div>
+
+        <div class="anatomy-item">
+          <div class="anatomy-dot dot-white"></div>
+          <div class="anatomy-text"><strong>Layer 1 — Inner Rim</strong><br/>
+          <code>inset 0 1px 0 rgba(255,255,255,0.2)</code><br/>Top specular highlight simulates glass surface curvature.</div>
+        </div>
+
+        <div class="anatomy-item">
+          <div class="anatomy-dot dot-cyan"></div>
+          <div class="anatomy-text"><strong>Layer 2 — Base Refraction</strong><br/>
+          <code>inset 0 -1px 0 rgba(0,255,255,0.15)</code><br/>Bottom caustic — cyan light refracting through the capsule base.</div>
+        </div>
+
+        <div class="anatomy-item">
+          <div class="anatomy-dot dot-fuchsia"></div>
+          <div class="anatomy-text"><strong>Layer 3 — Close Glow (12px)</strong><br/>
+          <code>0 0 12px rgba(247,27,248,0.5)</code><br/>The immediate halo — most saturated, makes the button "emit."</div>
+        </div>
+
+        <div class="anatomy-item">
+          <div class="anatomy-dot dot-purple"></div>
+          <div class="anatomy-text"><strong>Layer 4 — Mid Bloom (48px)</strong><br/>
+          <code>0 0 48px rgba(247,27,248,0.15)</code><br/>Atmospheric diffusion — the glow as it travels through air.</div>
+        </div>
+
+        <div class="anatomy-item">
+          <div class="anatomy-dot dot-white" style="opacity:0.3;"></div>
+          <div class="anatomy-text"><strong>Layer 5 — Ground Shadow</strong><br/>
+          <code>0 8px 24px rgba(0,0,0,0.4)</code><br/>Physical grounding — prevents the button from floating unnaturally.</div>
+        </div>
+      </div>
+
+      <div class="anatomy-col">
+        <div class="anatomy-title">Glass Morphology — Surface Properties</div>
+
+        <div class="anatomy-item">
+          <div class="anatomy-dot dot-white"></div>
+          <div class="anatomy-text"><strong>Specular Sheen — ::before</strong><br/>
+          Top 50% of button covered with<br/><code>rgba(255,255,255,0.18) → transparent</code><br/>Simulates a convex glass surface catching light.</div>
+        </div>
+
+        <div class="anatomy-item">
+          <div class="anatomy-dot dot-cyan"></div>
+          <div class="anatomy-text"><strong>Refraction Caustic — ::after</strong><br/>
+          Bottom 30% inset cyan gradient.<br/>Light passing through the capsule body collects at the base edge.</div>
+        </div>
+
+        <div class="anatomy-item">
+          <div class="anatomy-dot dot-fuchsia"></div>
+          <div class="anatomy-text"><strong>Fill — Transmissive Gradient</strong><br/>
+          <code>rgba(247,27,248,0.28) → rgba(0,255,255,0.18)</code><br/>Never fully opaque — interior must feel gaseous, not solid.</div>
+        </div>
+
+        <div class="anatomy-item">
+          <div class="anatomy-dot dot-purple"></div>
+          <div class="anatomy-text"><strong>Hover Amplification</strong><br/>
+          On <code>:hover</code>: translate Y-3px + scale 1.02.<br/>All glow layers intensify by ~2×. Conveys the button powering up.</div>
+        </div>
+
+        <div class="anatomy-item">
+          <div class="anatomy-dot dot-white" style="opacity:0.3;"></div>
+          <div class="anatomy-text"><strong>Backdrop Filter</strong><br/>
+          <code>backdrop-filter: blur(12px)</code><br/>The glass capsule blurs whatever is behind it — essential material behavior.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Code -->
+    <div class="code-block">
+<span class="cm">/* ── Forge AI CTA — Neon-Glass Button System ── */</span>
+.btn-primary {
+  <span class="cm">/* Typography */</span>
+  font-family: var(--font-label);
+  font-size: 14px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: #ffffff;
+
+  <span class="cm">/* Transmissive fill — never fully opaque */</span>
+  background: linear-gradient(135deg,
+    rgba(247,27,248,0.28) 0%,
+    rgba(130,60,200,0.18) 50%,
+    rgba(0,255,255,0.18) 100%
+  );
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(247,27,248,0.55);
+  border-radius: 100px;
+  padding: 16px 40px;
+
+  <span class="cm">/* 5-layer glow system */</span>
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.2),    <span class="cm">/* rim specular */</span>
+    inset 0 -1px 0 rgba(0,255,255,0.15),    <span class="cm">/* base caustic */</span>
+    0 0 12px rgba(247,27,248,0.5),          <span class="cm">/* close halo */</span>
+    0 0 48px rgba(247,27,248,0.15),         <span class="cm">/* mid bloom */</span>
+    0 8px 24px rgba(0,0,0,0.4);             <span class="cm">/* ground shadow */</span>
+  
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  overflow: hidden; position: relative;
+}
+
+<span class="cm">/* Specular glass surface */</span>
+.btn-primary::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; right: 0; height: 50%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.18) 0%, transparent 100%);
+  border-radius: 100px 100px 0 0;
+}
+<span class="cm">/* Refraction caustic */</span>
+.btn-primary::after {
+  content: ''; position: absolute;
+  bottom: 0; left: 10%; right: 10%; height: 30%;
+  background: linear-gradient(0deg, rgba(0,255,255,0.18) 0%, transparent 100%);
+}
+
+<span class="cm">/* Hover: power up */</span>
+.btn-primary:hover {
+  transform: translateY(-3px) scale(1.02);
+  border-color: rgba(247,27,248,0.85);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.28),
+    inset 0 -1px 0 rgba(0,255,255,0.25),
+    0 0 18px rgba(247,27,248,0.75),
+    0 0 72px rgba(247,27,248,0.3),
+    0 12px 32px rgba(0,0,0,0.5);
+}
+    </div>
+  </section>
+
+</main>
+
+<!-- ── TWEAKS PANEL ── -->
+<div id="tweaks-panel">
+  <div class="tweaks-title">Tweaks</div>
+
+  <div class="tweak-row">
+    <label class="tweak-label">Mode</label>
+    <div class="tweak-toggle-pill">
+      <div class="tweak-opt selected" data-tweak-mode="dark">Dark</div>
+      <div class="tweak-opt" data-tweak-mode="light">Light</div>
+    </div>
+  </div>
+
+  <div class="tweak-row">
+    <label class="tweak-label">Button Glow Intensity</label>
+    <input type="range" class="tweak-slider" id="glow-slider" min="0.2" max="1.5" step="0.05" value="1.0" />
+  </div>
+
+  <div class="tweak-row">
+    <label class="tweak-label">Logo Bloom Pulse</label>
+    <div class="tweak-toggle-pill">
+      <div class="tweak-opt selected" data-pulse="on">On</div>
+      <div class="tweak-opt" data-pulse="off">Off</div>
+    </div>
+  </div>
+
+  <div class="tweak-row">
+    <label class="tweak-label">Display Font Size</label>
+    <input type="range" class="tweak-slider" id="size-slider" min="44" max="100" step="2" value="68" />
+  </div>
+</div>
+
+<script>
+  const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+    "glowIntensity": 1,
+    "pulse": true,
+    "displaySize": 68,
+    "mode": "light"
+  }/*EDITMODE-END*/;
+
+  // ── MODE TOGGLE ──
+  const body = document.body;
+  const modeToggle = document.getElementById('modeToggle');
+  const modeLabel = document.getElementById('mode-label');
+  const navLogo = document.getElementById('nav-logo');
+
+  const DARK_LOGO = "uploads/A_high-definition,_3D_202604191955.png";
+  const LIGHT_LOGO = "uploads/Modify_the_provided_202604192131.png";
+
+  function setMode(mode) {
+    body.setAttribute('data-mode', mode);
+    modeLabel.textContent = mode === 'dark' ? 'Dark' : 'Light';
+    navLogo.src = mode === 'dark' ? DARK_LOGO : LIGHT_LOGO;
+    navLogo.style.filter = mode === 'dark'
+      ? 'drop-shadow(0 0 8px rgba(247,27,248,0.7))'
+      : 'drop-shadow(0 0 6px rgba(0,150,220,0.4))';
+    // sync tweaks panel
+    document.querySelectorAll('[data-tweak-mode]').forEach(el => {
+      el.classList.toggle('selected', el.dataset.tweakMode === mode);
+    });
+    window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { mode } }, '*');
+  }
+
+  modeToggle.addEventListener('click', () => {
+    const cur = body.getAttribute('data-mode');
+    setMode(cur === 'dark' ? 'light' : 'dark');
+  });
+
+  // ── TWEAKS ──
+  window.addEventListener('message', e => {
+    if (e.data?.type === '__activate_edit_mode') document.getElementById('tweaks-panel').style.display = 'block';
+    if (e.data?.type === '__deactivate_edit_mode') document.getElementById('tweaks-panel').style.display = 'none';
+  });
+  window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+
+  // glow intensity
+  const glowSlider = document.getElementById('glow-slider');
+  glowSlider.addEventListener('input', () => {
+    const v = parseFloat(glowSlider.value);
+    document.querySelectorAll('.btn-neon').forEach(btn => {
+      btn.style.setProperty('--glow-mult', v);
+      btn.style.boxShadow = `
+        inset 0 1px 0 rgba(255,255,255,${0.2 * v}),
+        inset 0 -1px 0 rgba(0,255,255,${0.15 * v}),
+        0 0 ${12 * v}px rgba(247,27,248,${0.5 * v}),
+        0 0 ${24 * v}px rgba(247,27,248,${0.3 * v}),
+        0 0 ${48 * v}px rgba(247,27,248,${0.15 * v}),
+        0 0 ${80 * v}px rgba(247,27,248,${0.08 * v}),
+        0 8px 24px rgba(0,0,0,0.4)
+      `;
+    });
+    window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { glowIntensity: v } }, '*');
+  });
+
+  // display size
+  const sizeSlider = document.getElementById('size-slider');
+  sizeSlider.addEventListener('input', () => {
+    const v = parseInt(sizeSlider.value);
+    document.querySelectorAll('.type-display').forEach(el => el.style.fontSize = v + 'px');
+    window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { displaySize: v } }, '*');
+  });
+
+  // pulse toggle
+  document.querySelectorAll('[data-pulse]').forEach(el => {
+    el.addEventListener('click', () => {
+      const on = el.dataset.pulse === 'on';
+      document.querySelectorAll('[data-pulse]').forEach(x => x.classList.remove('selected'));
+      el.classList.add('selected');
+      document.querySelectorAll('.glow-pulse').forEach(g => {
+        g.style.animationPlayState = on ? 'running' : 'paused';
+      });
+      window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { pulse: on } }, '*');
+    });
+  });
+
+  // mode tweak
+  document.querySelectorAll('[data-tweak-mode]').forEach(el => {
+    el.addEventListener('click', () => setMode(el.dataset.tweakMode));
+  });
+
+  // apply defaults
+  setMode(TWEAK_DEFAULTS.mode || 'dark');
+
+  // nav smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+</script>
+</body>
+</html>
