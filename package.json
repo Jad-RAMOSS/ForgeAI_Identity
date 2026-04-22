@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "mkdir -p dist && cp -r \"Forge AI Brand Identity/\"* dist/"
+    "build": "mkdir -p dist && cp -Rp \"Forge AI Brand Identity/.\" dist/ && cp \"dist/Brand Catalogue.html\" dist/index.html"
   }
 }

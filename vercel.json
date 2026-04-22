@@ -2,9 +2,6 @@
   "outputDirectory": "dist",
   "cleanUrls": true,
   "trailingSlash": false,
-  "rewrites": [
-    { "source": "/", "destination": "/Brand%20Catalogue.html" }
-  ],
   "headers": [
     {
       "source": "/(.*)",
