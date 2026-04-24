@@ -132,11 +132,6 @@ function ColorSection() {
         {semantic.map(s => <Swatch key={s.name} {...s} />)}
       </div>
 
-      {/* Color reference image */}
-      <div className="subh" style={{ marginTop: 44 }}>Color Analysis Reference</div>
-      <div style={{ borderRadius: 'var(--r20)', overflow: 'hidden', border: '1px solid var(--bds)' }}>
-        <img src="uploads/color-analysis.png" style={{ width: '100%', display: 'block' }} alt="Color gradient & transparency analysis" />
-      </div>
     </section>
   );
 }
@@ -200,7 +195,7 @@ function TypeSection() {
                 letterSpacing: t.tr,
                 fontStyle: 'normal',
                 textTransform: t.role === 'Label / Eyebrow' ? 'uppercase' : 'none',
-                background: isDisplay ? 'linear-gradient(135deg,#fff 0%,#F71BF8 45%,#00FFFF 90%)' : 'none',
+                background: isDisplay ? 'linear-gradient(135deg,#F71BF8 0%,#b042e5 38%,#6065ef 68%,#00FFFF 100%)' : 'none',
                 WebkitBackgroundClip: isDisplay ? 'text' : 'initial',
                 WebkitTextFillColor: isDisplay ? 'transparent' : 'inherit',
                 backgroundClip: isDisplay ? 'text' : 'initial',
