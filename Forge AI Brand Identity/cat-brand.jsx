@@ -92,8 +92,8 @@ function LogoSection() {
         <div className="dp-dark">
           <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#F71BF8', marginBottom: 12 }}>Dark Mode — Glow Variant</div>
           <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width: 180, height: 180 }}>
-            <div style={{ position: 'absolute', inset: -20, borderRadius: '50%', background: 'radial-gradient(ellipse,rgba(247,27,248,0.30) 0%,rgba(140,60,220,0.12) 58%,transparent 78%)', filter: 'blur(22px)', animation: 'pulse-glow 3s ease-in-out infinite' }} />
-            <img src="uploads/Dark-logo-no-bckgrnd.png" style={{ width: 160, height: 160, objectFit: 'contain', position: 'relative', filter: 'drop-shadow(0 0 18px rgba(247,27,248,0.88)) drop-shadow(0 0 38px rgba(247,27,248,0.38)) drop-shadow(0 0 10px rgba(0,255,255,0.14))' }} alt="Forge AI dark logo" />
+            <div style={{ position: 'absolute', inset: -20, borderRadius: '50%', background: 'radial-gradient(ellipse,rgba(247,27,248,0.18) 0%,rgba(140,60,220,0.07) 58%,transparent 78%)', filter: 'blur(22px)', animation: 'pulse-glow 3s ease-in-out infinite' }} />
+            <img src="uploads/Dark-logo-no-bckgrnd.png" style={{ width: 160, height: 160, objectFit: 'contain', position: 'relative', filter: 'drop-shadow(0 0 12px rgba(247,27,248,0.65)) drop-shadow(0 0 24px rgba(247,27,248,0.22)) drop-shadow(0 0 6px rgba(0,255,255,0.09))' }} alt="Forge AI dark logo" />
           </div>
           <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.38)', marginTop: 10 }}>Gaseous Infusion · Bloom Active</div>
           <div style={{ fontSize: 10, color: 'rgba(247,27,248,0.55)', marginTop: 4, letterSpacing: '0.08em' }}>filter: drop-shadow glow · pulse animation</div>
