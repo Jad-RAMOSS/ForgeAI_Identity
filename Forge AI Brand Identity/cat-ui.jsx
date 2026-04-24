@@ -161,7 +161,7 @@ function TopNav() {
   return (
     <div className="tnav">
       <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
-        <img src="uploads/logo-dark.png" style={{ height: 22, filter: 'drop-shadow(0 0 6px rgba(247,27,248,0.65))' }} alt="" />
+        <img src="uploads/Dark-logo-no-bckgrnd.png" style={{ height: 22, filter: 'drop-shadow(0 0 6px rgba(247,27,248,0.65))' }} alt="" />
         <span style={{ fontFamily: 'var(--font)', fontSize: 11, fontWeight: 700, letterSpacing: '0.13em', background: 'linear-gradient(90deg,#F71BF8,#00FFFF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>FORGE AI</span>
       </div>
       <div className="tnav-links">

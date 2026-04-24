@@ -300,7 +300,7 @@ function SpacingSection() {
       <div style={{ background: 'var(--sf)', border: '1px solid var(--bds)', borderRadius: 'var(--r20)', padding: 24 }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12,1fr)', gap: 6, marginBottom: 12 }}>
           {Array.from({ length: 12 }, (_, i) => (
-            <div key={i} style={{ background: i % 2 === 0 ? 'rgba(247,27,248,0.12)' : 'rgba(0,255,255,0.08)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 4, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 700, color: i % 2 === 0 ? '#F71BF8' : '#00FFFF', opacity: 0.85 }}>
+            <div key={i} className={i % 2 === 0 ? 'grid-col grid-col-f' : 'grid-col grid-col-c'} style={{ background: i % 2 === 0 ? 'rgba(247,27,248,0.12)' : 'rgba(0,255,255,0.08)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 4, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 700, color: i % 2 === 0 ? '#F71BF8' : '#00FFFF', opacity: 0.85 }}>
               {i + 1}
             </div>
           ))}
@@ -308,7 +308,7 @@ function SpacingSection() {
         {[['4fr', '4fr', '4fr'], ['8fr', '4fr']].map((cols, ri) => (
           <div key={ri} style={{ display: 'grid', gridTemplateColumns: cols.join(' '), gap: 6, marginBottom: 6 }}>
             {cols.map((c, ci) => (
-              <div key={ci} style={{ background: ri === 0 ? 'rgba(247,27,248,0.06)' : 'rgba(0,255,255,0.05)', border: `1px dashed ${ri === 0 ? 'rgba(247,27,248,0.2)' : 'rgba(0,255,255,0.18)'}`, borderRadius: 6, padding: '10px', fontSize: 10, fontWeight: 600, color: 'var(--t3)', textAlign: 'center' }}>
+              <div key={ci} className={ri === 0 ? 'grid-layout-f' : 'grid-layout-c'} style={{ background: ri === 0 ? 'rgba(247,27,248,0.06)' : 'rgba(0,255,255,0.05)', border: `1px dashed ${ri === 0 ? 'rgba(247,27,248,0.2)' : 'rgba(0,255,255,0.18)'}`, borderRadius: 6, padding: '10px', fontSize: 10, fontWeight: 600, color: 'var(--t3)', textAlign: 'center' }}>
                 {c === '4fr' ? '4 cols' : c === '8fr' ? '8 cols — content' : '4 cols — sidebar'}
               </div>
             ))}
