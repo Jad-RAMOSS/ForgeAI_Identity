@@ -92,15 +92,15 @@ function LogoSection() {
         <div className="dp-dark">
           <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#F71BF8', marginBottom: 12 }}>Dark Mode — Glow Variant</div>
           <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width: 180, height: 180 }}>
-            <div style={{ position: 'absolute', inset: -20, borderRadius: '50%', background: 'radial-gradient(ellipse,rgba(247,27,248,0.28) 0%,rgba(0,255,255,0.12) 55%,transparent 75%)', filter: 'blur(18px)', animation: 'pulse-glow 3s ease-in-out infinite' }} />
-            <img src="uploads/Dark-logo-no-bckgrnd.png" style={{ width: 160, height: 160, objectFit: 'contain', position: 'relative', filter: 'drop-shadow(0 0 24px rgba(247,27,248,0.8)) drop-shadow(0 0 48px rgba(0,255,255,0.4))' }} alt="Forge AI dark logo" />
+            <div style={{ position: 'absolute', inset: -20, borderRadius: '50%', background: 'radial-gradient(ellipse,rgba(247,27,248,0.30) 0%,rgba(140,60,220,0.12) 58%,transparent 78%)', filter: 'blur(22px)', animation: 'pulse-glow 3s ease-in-out infinite' }} />
+            <img src="uploads/Dark-logo-no-bckgrnd.png" style={{ width: 160, height: 160, objectFit: 'contain', position: 'relative', filter: 'drop-shadow(0 0 18px rgba(247,27,248,0.88)) drop-shadow(0 0 38px rgba(247,27,248,0.38)) drop-shadow(0 0 10px rgba(0,255,255,0.14))' }} alt="Forge AI dark logo" />
           </div>
           <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.38)', marginTop: 10 }}>Gaseous Infusion · Bloom Active</div>
           <div style={{ fontSize: 10, color: 'rgba(247,27,248,0.55)', marginTop: 4, letterSpacing: '0.08em' }}>filter: drop-shadow glow · pulse animation</div>
         </div>
         <div className="dp-light">
           <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#0090CC', marginBottom: 12 }}>Light Mode — Refractive Variant</div>
-          <img src="uploads/light-logo-no_bckgrnd.png" style={{ width: 160, height: 160, objectFit: 'contain', filter: 'drop-shadow(0 0 8px rgba(0,150,220,0.3)) drop-shadow(0 0 2px rgba(247,27,248,0.18))' }} alt="Forge AI light logo" />
+          <img src="uploads/light-logo-no_bckgrnd.png" style={{ width: 160, height: 160, objectFit: 'contain', filter: 'drop-shadow(0 0 18px rgba(247,27,248,0.38)) drop-shadow(0 0 8px rgba(247,27,248,0.22)) drop-shadow(0 0 4px rgba(0,150,220,0.14))' }} alt="Forge AI light logo" />
           <div style={{ fontSize: 11, color: 'rgba(0,0,0,0.32)', marginTop: 10 }}>Caustic Refraction · Clarity Mode</div>
           <div style={{ fontSize: 10, color: '#0090CC', marginTop: 4, letterSpacing: '0.08em', opacity: 0.7 }}>subtle drop-shadow only · no pulse</div>
         </div>
