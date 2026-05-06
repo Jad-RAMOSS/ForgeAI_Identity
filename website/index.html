@@ -39,10 +39,10 @@
   --ts-icon: rgba(255,255,255,.42);
   --hero-overlay: linear-gradient(180deg,rgba(10,10,10,.4) 0%,rgba(10,10,10,.12) 42%,rgba(10,10,10,.5) 100%);
   /* glass.md spec values per theme */
-  --gl-overlay: rgba(255,255,255,0.06);
-  --gl-rim-a: rgba(255,255,255,0.45);
-  --gl-rim-b: rgba(255,255,255,0.28);
-  --gl-shadow: 0 6px 6px rgba(0,0,0,.35), 0 0 28px rgba(0,0,0,.18);
+  --gl-overlay: rgba(255,255,255,0.09);
+  --gl-rim-a: rgba(255,255,255,0.55);
+  --gl-rim-b: rgba(255,255,255,0.22);
+  --gl-shadow: 0 8px 32px rgba(0,0,0,.42), 0 2px 8px rgba(0,0,0,.28), 0 0 0 1px rgba(255,255,255,0.06);
 }
 
 /* Light */
@@ -175,7 +175,7 @@ section { position:relative; z-index:1 }
   position:absolute; inset:0; z-index:20;
   border-radius:inherit;
   overflow:hidden;
-  box-shadow:inset 2px 2px 1px 0 var(--gl-rim-a), inset -1px -1px 1px 1px var(--gl-rim-b);
+  box-shadow:inset 2px 2px 1px 0 var(--gl-rim-a), inset -1px -1px 1px 1px var(--gl-rim-b), inset 0 0 20px rgba(247,27,248,0.04);
   pointer-events:none;
 }
 
@@ -525,29 +525,18 @@ footer {
 <svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false">
   <defs>
     <filter id="glass-distortion" x="0%" y="0%" width="100%" height="100%" filterUnits="objectBoundingBox" color-interpolation-filters="linearRGB">
-      <!-- Step 1: generate noise map -->
-      <feTurbulence type="fractalNoise" baseFrequency="0.001 0.005" numOctaves="1" seed="17" result="turbulence"/>
-      <!-- Step 2: shape the noise channels used for displacement -->
+      <feTurbulence type="fractalNoise" baseFrequency="0.0015 0.006" numOctaves="1" seed="17" result="turbulence"/>
       <feComponentTransfer in="turbulence" result="mapped">
         <feFuncR type="gamma" amplitude="1" exponent="10" offset="0.5"/>
         <feFuncG type="gamma" amplitude="0" exponent="1" offset="0"/>
         <feFuncB type="gamma" amplitude="0" exponent="1" offset="0.5"/>
       </feComponentTransfer>
-      <!-- Step 3: soften the map for smoother warping -->
-      <feGaussianBlur in="turbulence" stdDeviation="3" result="softMap"/>
-      <!-- Step 4: displace the source pixels (Chrome applies this to the
-           composited backdrop, producing actual content warping) -->
-      <feDisplacementMap in="SourceGraphic" in2="softMap" scale="200" xChannelSelector="R" yChannelSelector="G" result="displaced"/>
-      <!-- Step 5: compute specular highlight from the surface map -->
-      <feSpecularLighting in="softMap" surfaceScale="5" specularConstant="0.8" specularExponent="120" lighting-color="white" result="specLight">
+      <feGaussianBlur in="turbulence" stdDeviation="2.5" result="softMap"/>
+      <feSpecularLighting in="softMap" surfaceScale="6" specularConstant="0.9" specularExponent="110" lighting-color="white" result="specLight">
         <fePointLight x="-200" y="-200" z="300"/>
       </feSpecularLighting>
-      <!-- Step 6: clip specular to alpha of displaced image so highlight
-           only appears over the glass element, not in transparent regions -->
-      <feComposite in="specLight" in2="displaced" operator="in" result="clippedSpec"/>
-      <!-- Step 7: screen-blend the highlight onto the displaced image —
-           adds gloss without obscuring warped content beneath -->
-      <feBlend in="displaced" in2="clippedSpec" mode="screen"/>
+      <feComposite in="specLight" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="litImage"/>
+      <feDisplacementMap in="SourceGraphic" in2="softMap" scale="180" xChannelSelector="R" yChannelSelector="G"/>
     </filter>
   </defs>
 </svg>

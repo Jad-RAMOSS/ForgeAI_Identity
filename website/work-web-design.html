@@ -33,10 +33,10 @@
   --ts-track: rgba(255,255,255,.08);
   --ts-border: rgba(255,255,255,.14);
   --ts-icon: rgba(255,255,255,.42);
-  --gl-overlay: rgba(255,255,255,0.06);
-  --gl-rim-a: rgba(255,255,255,0.45);
-  --gl-rim-b: rgba(255,255,255,0.28);
-  --gl-shadow: 0 6px 6px rgba(0,0,0,.35), 0 0 28px rgba(0,0,0,.18);
+  --gl-overlay: rgba(255,255,255,0.09);
+  --gl-rim-a: rgba(255,255,255,0.55);
+  --gl-rim-b: rgba(255,255,255,0.22);
+  --gl-shadow: 0 8px 32px rgba(0,0,0,.42), 0 2px 8px rgba(0,0,0,.28), 0 0 0 1px rgba(255,255,255,0.06);
 }
 [data-theme="light"] {
   --obs: #F0EFFA;
@@ -93,11 +93,11 @@ section { position:relative; z-index:1 }
   transition:box-shadow 700ms cubic-bezier(0.175,0.885,0.32,2.2), transform 700ms cubic-bezier(0.175,0.885,0.32,2.2);
 }
 .glass:hover { transform:translateY(-3px); box-shadow:0 14px 36px rgba(0,0,0,.32), 0 0 32px rgba(247,27,248,.08); }
-.gl-blur { position:absolute; inset:0; z-index:0; overflow:hidden; border-radius:inherit; backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px); filter:url(#glass-distortion); isolation:isolate; }
+.gl-blur { position:absolute; inset:0; z-index:0; overflow:hidden; border-radius:inherit; backdrop-filter:blur(3px) saturate(160%) brightness(1.06); -webkit-backdrop-filter:blur(6px) saturate(200%) brightness(1.1); filter:url(#glass-distortion); isolation:isolate; }
 .g-mesh { position:absolute; inset:-55%; z-index:5; pointer-events:none; background:radial-gradient(circle at 38% 42%,rgba(247,27,248,.13),transparent 55%), radial-gradient(circle at 64% 62%,rgba(0,255,255,.08),transparent 55%); filter:blur(38px); animation:gmesh 15s ease-in-out infinite alternate; }
 @keyframes gmesh { 0%{transform:rotate(0deg) scale(1)} 100%{transform:rotate(14deg) scale(1.1)} }
 .gl-overlay { position:absolute; inset:0; z-index:10; border-radius:inherit; background:var(--gl-overlay); }
-.gl-rim { position:absolute; inset:0; z-index:20; border-radius:inherit; overflow:hidden; box-shadow:inset 2px 2px 1px 0 var(--gl-rim-a), inset -1px -1px 1px 1px var(--gl-rim-b); pointer-events:none; }
+.gl-rim { position:absolute; inset:0; z-index:20; border-radius:inherit; overflow:hidden; box-shadow:inset 2px 2px 1px 0 var(--gl-rim-a), inset -1px -1px 1px 1px var(--gl-rim-b), inset 0 0 20px rgba(247,27,248,0.04); pointer-events:none; }
 .gl-content { position:relative; z-index:30 }
 
 /* ── Section divider ─────────────────────────────────────────────── */
@@ -187,6 +187,9 @@ footer { border-top:1px solid rgba(255,255,255,.055); padding:32px var(--pad); d
   .nav-links { display:none }
   .projects-grid { grid-template-columns:1fr }
 }
+@media (max-width:768px) {
+  .gl-blur { backdrop-filter:blur(6px) saturate(160%) brightness(1.06); -webkit-backdrop-filter:blur(8px) saturate(200%) brightness(1.1); }
+}
 </style>
 </head>
 <body>
@@ -195,18 +198,18 @@ footer { border-top:1px solid rgba(255,255,255,.055); padding:32px var(--pad); d
 <svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false">
   <defs>
     <filter id="glass-distortion" x="0%" y="0%" width="100%" height="100%" filterUnits="objectBoundingBox" color-interpolation-filters="linearRGB">
-      <feTurbulence type="fractalNoise" baseFrequency="0.001 0.005" numOctaves="1" seed="17" result="turbulence"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.0015 0.006" numOctaves="1" seed="17" result="turbulence"/>
       <feComponentTransfer in="turbulence" result="mapped">
         <feFuncR type="gamma" amplitude="1" exponent="10" offset="0.5"/>
         <feFuncG type="gamma" amplitude="0" exponent="1" offset="0"/>
         <feFuncB type="gamma" amplitude="0" exponent="1" offset="0.5"/>
       </feComponentTransfer>
-      <feGaussianBlur in="turbulence" stdDeviation="3" result="softMap"/>
-      <feSpecularLighting in="softMap" surfaceScale="5" specularConstant="1" specularExponent="100" lighting-color="white" result="specLight">
+      <feGaussianBlur in="turbulence" stdDeviation="2.5" result="softMap"/>
+      <feSpecularLighting in="softMap" surfaceScale="6" specularConstant="0.9" specularExponent="110" lighting-color="white" result="specLight">
         <fePointLight x="-200" y="-200" z="300"/>
       </feSpecularLighting>
       <feComposite in="specLight" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="litImage"/>
-      <feDisplacementMap in="SourceGraphic" in2="softMap" scale="200" xChannelSelector="R" yChannelSelector="G"/>
+      <feDisplacementMap in="SourceGraphic" in2="softMap" scale="180" xChannelSelector="R" yChannelSelector="G"/>
     </filter>
   </defs>
 </svg>
