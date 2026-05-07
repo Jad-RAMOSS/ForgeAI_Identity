@@ -69,7 +69,7 @@ a { color:inherit; text-decoration:none }
 
 /* ── Ambient background ──────────────────────────────────────────── */
 body::before {
-  content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:2;
   background:
     radial-gradient(ellipse 80vw 55vh at 8% 12%, var(--ambient1) 0%,transparent 60%),
     radial-gradient(ellipse 65vw 50vh at 92% 82%, var(--ambient2) 0%,transparent 60%),
@@ -79,14 +79,14 @@ body::before {
 }
 @keyframes ambient { 0%{opacity:.75;transform:scale(1)} 100%{opacity:1;transform:scale(1.05)} }
 body::after {
-  content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:2;
   background-image:radial-gradient(var(--dot-color) 1px,transparent 1px);
   background-size:32px 32px; transition:background .5s;
 }
 
 /* ── Layout ──────────────────────────────────────────────────────── */
-.container { max-width:var(--max-w); margin:0 auto; padding:0 var(--pad); position:relative; z-index:2 }
-section { position:relative; z-index:2 }
+.container { max-width:var(--max-w); margin:0 auto; padding:0 var(--pad); position:relative; z-index:3 }
+section { position:relative; z-index:3 }
 
 /* ── Section Divider ─────────────────────────────────────────────── */
 .section-divider {

@@ -87,6 +87,14 @@ export default function CyberneticGridShader() {
     };
     window.addEventListener('mousemove', onMouseMove);
 
+    const onTouch = (e: TouchEvent) => {
+      const touch = e.touches[0];
+      if (!touch) return;
+      uniforms.iMouse.value.set(touch.clientX, container.clientHeight - touch.clientY);
+    };
+    window.addEventListener('touchstart', onTouch, { passive: true });
+    window.addEventListener('touchmove', onTouch, { passive: true });
+
     renderer.setAnimationLoop(() => {
       uniforms.iTime.value = clock.getElapsedTime();
       renderer.render(scene, camera);
@@ -95,6 +103,8 @@ export default function CyberneticGridShader() {
     return () => {
       window.removeEventListener('resize', onResize);
       window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('touchstart', onTouch);
+      window.removeEventListener('touchmove', onTouch);
       renderer.setAnimationLoop(null);
       const canvas = renderer.domElement;
       if (canvas.parentNode) canvas.parentNode.removeChild(canvas);
