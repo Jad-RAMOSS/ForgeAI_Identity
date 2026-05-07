@@ -6,9 +6,6 @@ export default function CyberneticGridShader() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-    if (isSafari) return;
-
     const container = containerRef.current;
     if (!container) return;
 
