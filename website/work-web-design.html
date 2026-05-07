@@ -27,8 +27,8 @@
   --input-bg: rgba(255,255,255,.05);
   --input-border: rgba(255,255,255,.09);
   --ambient1: rgba(247,27,248,.14);
-  --ambient2: rgba(0,255,255,.09);
-  --ambient3: rgba(120,50,210,.07);
+  --ambient2: rgba(0,255,255,.13);
+  --ambient3: rgba(120,50,210,.11);
   --dot-color: rgba(247,27,248,.055);
   --ts-track: rgba(255,255,255,.08);
   --ts-border: rgba(255,255,255,.14);
@@ -93,8 +93,9 @@ section { position:relative; z-index:1 }
   transition:box-shadow 700ms cubic-bezier(0.175,0.885,0.32,2.2), transform 700ms cubic-bezier(0.175,0.885,0.32,2.2);
 }
 .glass:hover { transform:translateY(-3px); box-shadow:0 14px 36px rgba(0,0,0,.32), 0 0 32px rgba(247,27,248,.08); }
-.gl-blur { position:absolute; inset:0; z-index:0; overflow:hidden; border-radius:inherit; backdrop-filter:blur(3px) saturate(160%) brightness(1.06); -webkit-backdrop-filter:blur(6px) saturate(200%) brightness(1.1); filter:url(#glass-distortion); isolation:isolate; }
-.g-mesh { position:absolute; inset:-55%; z-index:5; pointer-events:none; background:radial-gradient(circle at 38% 42%,rgba(247,27,248,.13),transparent 55%), radial-gradient(circle at 64% 62%,rgba(0,255,255,.08),transparent 55%); filter:blur(38px); animation:gmesh 15s ease-in-out infinite alternate; }
+.gl-blur { position:absolute; inset:0; z-index:0; overflow:hidden; border-radius:inherit; backdrop-filter:blur(18px) saturate(280%) brightness(1.15); -webkit-backdrop-filter:blur(18px) saturate(280%) brightness(1.15); isolation:isolate; }
+.nav .gl-blur { filter:url(#glass-distortion); }
+.g-mesh { position:absolute; inset:-55%; z-index:5; pointer-events:none; background:radial-gradient(circle at 38% 42%,rgba(247,27,248,.22),transparent 55%), radial-gradient(circle at 64% 62%,rgba(0,255,255,.14),transparent 55%); filter:blur(38px); animation:gmesh 15s ease-in-out infinite alternate; }
 @keyframes gmesh { 0%{transform:rotate(0deg) scale(1)} 100%{transform:rotate(14deg) scale(1.1)} }
 .gl-overlay { position:absolute; inset:0; z-index:10; border-radius:inherit; background:var(--gl-overlay); }
 .gl-rim { position:absolute; inset:0; z-index:20; border-radius:inherit; overflow:hidden; box-shadow:inset 2px 2px 1px 0 var(--gl-rim-a), inset -1px -1px 1px 1px var(--gl-rim-b), inset 0 0 20px rgba(247,27,248,0.04); pointer-events:none; }
@@ -188,7 +189,7 @@ footer { border-top:1px solid rgba(255,255,255,.055); padding:32px var(--pad); d
   .projects-grid { grid-template-columns:1fr }
 }
 @media (max-width:768px) {
-  .gl-blur { backdrop-filter:blur(6px) saturate(160%) brightness(1.06); -webkit-backdrop-filter:blur(8px) saturate(200%) brightness(1.1); }
+  .gl-blur { backdrop-filter:blur(12px) saturate(280%) brightness(1.15); -webkit-backdrop-filter:blur(12px) saturate(280%) brightness(1.15); }
 }
 </style>
 </head>
