@@ -61,7 +61,7 @@ export default function CyberneticGridShader() {
     const uniforms = {
       iTime:       { value: 0 },
       iResolution: { value: new THREE.Vector2() },
-      iMouse:      { value: new THREE.Vector2(window.innerWidth / 2, window.innerHeight / 2) },
+      iMouse:      { value: new THREE.Vector2(window.innerWidth / 2 * (window.devicePixelRatio||1), window.innerHeight / 2 * (window.devicePixelRatio||1)) },
     };
 
     const material = new THREE.ShaderMaterial({
@@ -73,24 +73,26 @@ export default function CyberneticGridShader() {
     const geometry = new THREE.PlaneGeometry(2, 2);
     scene.add(new THREE.Mesh(geometry, material));
 
+    const dpr = window.devicePixelRatio || 1;
+
     const onResize = () => {
       const w = container.clientWidth;
       const h = container.clientHeight;
       renderer.setSize(w, h);
-      uniforms.iResolution.value.set(w, h);
+      uniforms.iResolution.value.set(w * dpr, h * dpr);
     };
     window.addEventListener('resize', onResize);
     onResize();
 
     const onMouseMove = (e: MouseEvent) => {
-      uniforms.iMouse.value.set(e.clientX, container.clientHeight - e.clientY);
+      uniforms.iMouse.value.set(e.clientX * dpr, (container.clientHeight - e.clientY) * dpr);
     };
     window.addEventListener('mousemove', onMouseMove);
 
     const onTouch = (e: TouchEvent) => {
       const touch = e.touches[0];
       if (!touch) return;
-      uniforms.iMouse.value.set(touch.clientX, container.clientHeight - touch.clientY);
+      uniforms.iMouse.value.set(touch.clientX * dpr, (container.clientHeight - touch.clientY) * dpr);
     };
     window.addEventListener('touchstart', onTouch, { passive: true });
     window.addEventListener('touchmove', onTouch, { passive: true });
