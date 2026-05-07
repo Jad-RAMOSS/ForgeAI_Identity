@@ -308,7 +308,7 @@ section { position:relative; z-index:2 }
 [data-theme="light"] .provider-logo { filter:grayscale(1) brightness(.25); opacity:.38 }
 .provider:hover .provider-logo { opacity:.9; filter:grayscale(0) brightness(1); transform:scale(1.06); }
 [data-theme="dark"] .provider:hover .provider-logo {
-  filter:grayscale(0) brightness(1) drop-shadow(0 0 10px rgba(255,255,255,.35)) drop-shadow(0 0 4px rgba(255,255,255,.2));
+  filter:grayscale(0) brightness(1) drop-shadow(0 0 10px rgba(0,255,255,.55)) drop-shadow(0 0 18px rgba(247,27,248,.4));
 }
 [data-theme="light"] .provider:hover .provider-logo { opacity:.88; filter:grayscale(0) brightness(1) }
 
