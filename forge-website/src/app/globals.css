@@ -126,8 +126,8 @@ section { position:relative; z-index:2 }
 .nav .gl-blur { filter:url(#glass-distortion); }
 .g-mesh {
   position:absolute; inset:-55%; z-index:5; pointer-events:none;
-  background:radial-gradient(circle at 38% 42%,rgba(247,27,248,.22),transparent 55%),
-             radial-gradient(circle at 64% 62%,rgba(0,255,255,.14),transparent 55%);
+  background:radial-gradient(circle at 38% 42%,rgba(247,27,248,.07),transparent 55%),
+             radial-gradient(circle at 64% 62%,rgba(0,255,255,.05),transparent 55%);
   filter:blur(38px);
   animation:gmesh 15s ease-in-out infinite alternate;
 }
