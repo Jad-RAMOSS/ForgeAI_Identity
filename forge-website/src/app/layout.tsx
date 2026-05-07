@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import GlassFilter from '@/components/GlassFilter';
+import CyberneticGridShader from '@/components/CyberneticGridShader';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <GlassFilter />
+        <CyberneticGridShader />
         <div className="toast" id="forge-toast">
           <div className="toast-ic">✓</div>
           Message sent — we&apos;ll be in touch.
