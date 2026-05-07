@@ -20,10 +20,6 @@ export default function Hero() {
         </button>
       </a>
 
-      <div className="scroll-hint" aria-hidden="true">
-        <span>Scroll</span>
-        <div className="scroll-line" />
-      </div>
     </section>
   );
 }

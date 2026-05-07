@@ -120,7 +120,7 @@ section { position:relative; z-index:2 }
   position:absolute; inset:0; z-index:0;
   overflow:hidden; border-radius:inherit;
   backdrop-filter:blur(18px) saturate(280%) brightness(1.15);
-  -webkit-backdrop-filter:blur(18px) saturate(280%) brightness(1.15);
+  -webkit-backdrop-filter:blur(24px) saturate(160%) brightness(1.06);
   isolation:isolate;
 }
 .nav .gl-blur { filter:url(#glass-distortion); }
@@ -494,6 +494,6 @@ footer {
 @media(max-width:768px) {
   .gl-blur {
     backdrop-filter:blur(12px) saturate(280%) brightness(1.15);
-    -webkit-backdrop-filter:blur(12px) saturate(280%) brightness(1.15);
+    -webkit-backdrop-filter:blur(16px) saturate(160%) brightness(1.06);
   }
 }
